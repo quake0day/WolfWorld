@@ -1,0 +1,6 @@
+import {CHUNK_BYTES} from './contracts';
+export async function api<T>(path:string,init:RequestInit={}):Promise<T>{const r=await fetch(`/api/${path}`,{...init,headers:{...(init.body&&typeof init.body==='string'?{'Content-Type':'application/json'}:{}),...init.headers}});let b:any;try{b=await r.json()}catch{throw new Error(r.status===401?'Please sign in again.':'The service is temporarily unavailable. Please try again later.')}if(!r.ok)throw new Error(b.error||`Request failed (${r.status})`);return b}
+export async function upload(file:File,kind:'video'|'splat',progress:(p:number)=>void){
+ const u=await api<{id:string;chunkBytes:number}>('uploads',{method:'POST',body:JSON.stringify({name:file.name,size:file.size,kind})});
+ try{for(let start=0,n=1;start<file.size;start+=CHUNK_BYTES,n++){let error:unknown;for(let attempt=0;attempt<3;attempt++){try{await api(`uploads/${u.id}/parts/${n}`,{method:'PUT',body:file.slice(start,start+CHUNK_BYTES)});error=null;break}catch(e){error=e;await new Promise(r=>setTimeout(r,500*(attempt+1)))}}if(error)throw error;progress(Math.round(Math.min(file.size,start+CHUNK_BYTES)/file.size*100))}await api(`uploads/${u.id}/complete`,{method:'POST'});return u.id}catch(e){await api(`uploads/${u.id}`,{method:'DELETE'}).catch(()=>{});throw e}
+}

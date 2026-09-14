@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "Cite this software and the underlying models and methods used in your experiment."
+type: software
+title: "WolfWorld: Phone Videos to Explorable 3D Scenes"
+authors:
+  - family-names: Chen
+    given-names: Si
+repository-code: "https://github.com/quake0day/WolfWorld"
+url: "https://github.com/quake0day/WolfWorld"
+version: 0.1.0
+date-released: 2026-09-14
+license: MIT
+abstract: "An experimental web workspace connecting multi-video uploads, a WorldMirror GPU worker, durable scene storage, and Spark/Three.js Gaussian rendering."
+keywords:
+  - 3D reconstruction
+  - Gaussian splatting
+  - WorldMirror
+  - multi-view geometry
+  - browser visualization
